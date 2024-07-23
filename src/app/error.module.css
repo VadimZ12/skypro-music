@@ -1,0 +1,30 @@
+.wrapper {
+  position: absolute;
+    top:  50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #383838;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.button {
+  border: none;
+  cursor: pointer;
+  width: 278px;
+  height: 52px;
+  border-radius: 6px;
+  background-color: #580ea2;
+  color: #fff;
+}
+.button:hover {
+  background-color: #3F007D;
+}
+.heading{
+  padding-bottom: 24px;
+  color: #fff;
+}
