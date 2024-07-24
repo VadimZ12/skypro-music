@@ -1,15 +1,17 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, ChangeEvent } from "react";
 import cn from "classnames";
 import styles from "./Player.module.css";
-import { Props } from "@/types/types";
+
 import ProgressBar from "../ProgressBar/ProgressBar";
 import { timer } from "../helper";
-
-export const Player = ({ tracks }: Props) => {
+import { TrackType } from "@/types/types";
+type Props = {
+  track: TrackType;
+};
+export const Player = ({ track }: Props) => {
   const audioRef = useRef<null | HTMLAudioElement>(null);
 
-  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [isLoop, setIsLoop] = useState<boolean>(false);
@@ -17,78 +19,55 @@ export const Player = ({ tracks }: Props) => {
 
   const duration = audioRef.current?.duration || 0;
 
-  
- 
   // Функция для воспроизведения и паузы
   const togglePlay = () => {
     const audio = audioRef.current;
     if (isPlaying) {
-      audio.pause();
+      audio?.pause();
     } else {
-      audio.play();
+      audio?.play();
     }
     setIsPlaying((prev) => !prev);
-    
   };
+  //воспроизведение трека
   const play = () => {
     audioRef.current?.play();
+    setIsPlaying(true);
   };
-  const handleEnded = () => {
-    // Проверяем, не является ли текущий трек последним в плейлисте
-    if (currentTrackIndex < tracks.length - 1) {
-      // Переход к следующему треку
-      setCurrentTrackIndex(currentTrackIndex + 1);
-    } else {
-      // Или начинаем плейлист с начала
-      setCurrentTrackIndex(0);
-    }
-  };
-
+  //повтор трека
   const handleLoop = () => {
     setIsLoop((prev) => !prev);
-    audioRef.current.loop = !isLoop;
+    if (audioRef.current) audioRef.current.loop = !isLoop;
   };
-  // Устанавливаем источник аудио и обработчик события `ended` при изменении трека
+  //отслеживаем время воспроизведения трека
   useEffect(() => {
-    //audioRef.current.src = tracks[currentTrackIndex].track_file;
-    audioRef.current?.addEventListener("ended", handleEnded);
-
-    // Воспроизводим новый трек
-    audioRef.current.play();
-    return () => {
-      audioRef.current.removeEventListener("ended", handleEnded);
+    const audio = audioRef.current;
+    const setTime = () => {
+      if (audio) {
+        setCurrentTime(audio.currentTime);
+      }
     };
-  }, [currentTrackIndex, tracks]);
-
-  useEffect(() => {
-    if (isLoop) {
-      audioRef.current.addEventListener("ended", play);
-    } else {
-      audioRef.current.removeEventListener("ended", play);
-    }
-  }, [isLoop]);
-  useEffect(() => {
-    audioRef.current?.addEventListener("timeupdate", () =>
-      setCurrentTime(audioRef.current!.currentTime)
-    );
+    audio?.addEventListener("timeupdate", setTime);
     play();
-  }, []);
+    return () => {
+      audio?.removeEventListener("timeupdate", setTime);
+    };
+  }, [track]);
+
   //регулирование громкости
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
     }
   }, [volume]);
-const alertMessage = () => {
-  alert("Еще не реализовано");
-}
+
+  const alertMessage = () => {
+    alert("Еще не реализовано");
+  };
   return (
     <div className={styles.bar}>
       <div className={styles.bar__content}>
-        <audio
-          ref={audioRef}
-          src={tracks[currentTrackIndex].track_file}
-        ></audio>
+        <audio ref={audioRef} src={track?.track_file}></audio>
         <div className={styles.barTime}>
           {timer(currentTime)} / {timer(duration)}
         </div>
@@ -96,8 +75,8 @@ const alertMessage = () => {
           max={duration}
           value={currentTime}
           step={0.01}
-          onChange={(e) =>
-            (audioRef.current.currentTime = Number(e.target.value))
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            (audioRef.current && (audioRef.current.currentTime = Number(e.target.value)))
           }
         />
 
@@ -109,16 +88,19 @@ const alertMessage = () => {
                   <use xlinkHref="img/icon/sprite.svg#icon-prev" />
                 </svg>
               </div>
-              <div
-                className={cn(styles.player__btnPlay, styles.btn)}
-                
-              >
+              <div className={cn(styles.player__btnPlay, styles.btn)}>
                 {isPlaying ? (
-                  <svg className={styles.player__btnPlaySvg} onClick={togglePlay}>
+                  <svg
+                    className={styles.player__btnPlaySvg}
+                    onClick={togglePlay}
+                  >
                     <use xlinkHref="img/icon/sprite.svg#icon-pause" />
                   </svg>
                 ) : (
-                  <svg className={styles.player__btnPlaySvg} onClick={togglePlay}>
+                  <svg
+                    className={styles.player__btnPlaySvg}
+                    onClick={togglePlay}
+                  >
                     <use xlinkHref="img/icon/sprite.svg#icon-play" />
                   </svg>
                 )}
@@ -152,14 +134,14 @@ const alertMessage = () => {
                   </svg>
                 </div>
                 <div className={styles.trackPlay__author}>
-                  <a className={styles.trackPlay__authorLink} href="http://">
-                    Ты та...
-                  </a>
+                  <span className={styles.trackPlay__authorLink}>
+                    {track?.author}
+                  </span>
                 </div>
                 <div className={styles.trackPlay__album}>
-                  <a className={styles.trackPlay__albumLink} href="http://">
-                    Баста
-                  </a>
+                  <span className={styles.trackPlay__albumLink}>
+                    {track?.name}
+                  </span>
                 </div>
               </div>
               <div className={styles.trackPlay__likeDis}>
@@ -192,7 +174,9 @@ const alertMessage = () => {
                   max="1"
                   step="0.01"
                   value={volume}
-                  onChange={(e) => setVolume(e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setVolume(Number(e.target.value))
+                  }
                 />
               </div>
             </div>

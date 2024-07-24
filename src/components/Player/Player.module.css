@@ -319,6 +319,7 @@
 .volume__progressLine {
   width: 109px;
 }
+
 .barTime {
   display: flex;
   justify-content: flex-end;
