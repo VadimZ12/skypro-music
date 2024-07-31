@@ -1,12 +1,21 @@
-'use client'
+"use client";
 import cn from "classnames";
 import styles from "./Centerblock.module.css";
 import { Filters } from "../Filters/Filters";
-import { Props } from "@/types/types";
-import { useState } from "react";
+import { TrackType } from "@/types/types";
 import { timer } from "../helper";
-
-export const Centerblock = ({uniqueAuthors, uniqueGenre, tracks}: Props) => {
+type Props = {
+  tracks: TrackType[];
+  setTrack: (value: TrackType) => void;
+  uniqueAuthors: string[];
+  uniqueGenre: string[];
+};
+export const Centerblock = ({
+  uniqueAuthors,
+  uniqueGenre,
+  tracks,
+  setTrack,
+}: Props) => {
   return (
     <div className={styles.centerblock}>
       <div className={styles.search}>
@@ -43,7 +52,11 @@ export const Centerblock = ({uniqueAuthors, uniqueGenre, tracks}: Props) => {
         <div className={styles.content__playlist}>
           {tracks.map((value, index: number) => {
             return (
-              <div className={styles.playlist__item} key={index} >
+              <div
+                className={styles.playlist__item}
+                key={index}
+                onClick={() => setTrack(value)}
+              >
                 <div className={styles.playlist__track}>
                   <div className={styles.track__title}>
                     <div className={styles.track__titleImage}>
@@ -53,7 +66,7 @@ export const Centerblock = ({uniqueAuthors, uniqueGenre, tracks}: Props) => {
                     </div>
                     <div className={styles.track__titleText}>
                       <span className={styles.track__titleLink}>
-                        {value.name}{" "}
+                        {value.name}
                         <span className={styles.track__titleSpan} />
                       </span>
                     </div>

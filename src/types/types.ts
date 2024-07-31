@@ -20,5 +20,4 @@ export type TrackType = {
 export type Props = {
   uniqueAuthors: string[];
   uniqueGenre: string[];
-  tracks: TrackType[];
-};
+}
