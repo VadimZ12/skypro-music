@@ -148,6 +148,7 @@
 }
 .activeSVG {
   fill: #ffff;
+  stroke: #fff;
   scale: 1.25;
 }
 
@@ -165,6 +166,12 @@
   height: 12px;
   fill: transparent;
   stroke: #696969;
+}
+.player__btnShuffleSvgActive {
+  fill: transparent;
+  stroke: #ffffff;
+  scale: 1.25;
+
 }
 
 .player__trackPlay {

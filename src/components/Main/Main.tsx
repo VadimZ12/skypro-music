@@ -1,17 +1,15 @@
-"use client";
 import styles from "./Main.module.css";
 import { Menu } from "../Menu/Menu";
 import { Centerblock } from "../Centerblock/Centerblock";
 import { Sidebar } from "../Sidebar/Sidebar";
 import { Player } from "../Player/Player";
 import { TrackType } from "@/types/types";
-import { useState } from "react";
 
 export type Props = {
   tracks: TrackType[];
 };
 export const Main = ({ tracks }: Props) => {
-  const [track, setTrack] = useState<null | TrackType>(null);
+  // const [track, setTrack] = useState<null | TrackType>(null);
   const uniqueAuthors = Array.from(
     new Set(tracks.map((track) => track.author))
   );
@@ -23,13 +21,12 @@ export const Main = ({ tracks }: Props) => {
           <Menu />
           <Centerblock
             tracks={tracks}
-            setTrack={setTrack}
             uniqueAuthors={uniqueAuthors}
             uniqueGenre={uniqueGenre}
           />
           <Sidebar />
         </main>
-        {track && <Player track={track} />}
+        <Player />
         <footer className={styles.footer} />
       </div>
     </div>
