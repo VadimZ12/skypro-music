@@ -1,26 +1,36 @@
+"use client";
 import styles from "./Main.module.css";
 import { Menu } from "../Menu/Menu";
 import { Centerblock } from "../Centerblock/Centerblock";
 import { Sidebar } from "../Sidebar/Sidebar";
 import { Player } from "../Player/Player";
 import { TrackType } from "@/types/types";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
+import { setPlaylist } from "@/store/features/playlistSlice";
+import { useEffect } from "react";
 
 export type Props = {
   tracks: TrackType[];
 };
 export const Main = ({ tracks }: Props) => {
-  // const [track, setTrack] = useState<null | TrackType>(null);
+  const dispatch = useAppDispatch();
   const uniqueAuthors = Array.from(
     new Set(tracks.map((track) => track.author))
   );
   const uniqueGenre = Array.from(new Set(tracks.map((track) => track.genre)));
+  const filterTracks = useAppSelector((store) => store.playlist.filterPlaylist);
+
+  useEffect(() => {
+    dispatch(setPlaylist({ tracks }));
+  }, [dispatch, tracks]);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
         <main className={styles.main}>
           <Menu />
           <Centerblock
-            tracks={tracks}
+            tracks={filterTracks}
             uniqueAuthors={uniqueAuthors}
             uniqueGenre={uniqueGenre}
           />

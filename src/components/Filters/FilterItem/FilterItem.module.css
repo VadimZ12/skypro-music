@@ -68,3 +68,22 @@
   border-color: #9A48F1;
   color: #B672FF;
 }
+.filterCount {
+  position: absolute;
+  right: -8px;
+  bottom: 20px;
+  width: 26px;
+  height: 26px;
+  border-radius: 13px;
+  background: #ad61ff;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 13px;
+  text-align: center;
+  padding: 6px;
+  color: #ffffff;
+}
+.listTextActive {
+  color: #ad61ff;
+    text-decoration: underline;
+}

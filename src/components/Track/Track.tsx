@@ -19,7 +19,6 @@ const Track = ({ track, tracks }: Props) => {
   const handleTrackClick = () => {
     dispatch(setCurrentTrack({ currentTrack: track, tracks }));
     if (!isPlaying) dispatch(setIsPlaying());
-    console.log(isPlaying);
   };
 
   return (

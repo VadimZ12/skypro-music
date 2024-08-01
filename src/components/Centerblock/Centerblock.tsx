@@ -4,12 +4,15 @@ import styles from "./Centerblock.module.css";
 import { Filters } from "../Filters/Filters";
 import { TrackType } from "@/types/types";
 import Track from "../Track/Track";
+import { setFilter } from "@/store/features/playlistSlice";
+import { useAppDispatch } from "@/hooks/store";
 type Props = {
   tracks: TrackType[];
   uniqueAuthors: string[];
   uniqueGenre: string[];
 };
 export const Centerblock = ({ uniqueAuthors, uniqueGenre, tracks }: Props) => {
+  const dispatch = useAppDispatch();
   return (
     <div className={styles.centerblock}>
       <div className={styles.search}>
@@ -21,6 +24,9 @@ export const Centerblock = ({ uniqueAuthors, uniqueGenre, tracks }: Props) => {
           type="search"
           placeholder="Поиск"
           name="search"
+          onChange={(ev) => {
+            dispatch(setFilter({ searchString: ev.target.value }));
+          }}
         />
       </div>
       <h2 className={styles.heading}>Треки</h2>
