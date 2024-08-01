@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect, ChangeEvent } from "react";
+import { useState, useRef, useEffect, ChangeEvent, useCallback } from "react";
 import cn from "classnames";
 import styles from "./Player.module.css";
 
@@ -63,11 +63,25 @@ export const Player = () => {
   }, [currentTrack]);
 
   //регулирование громкости
-  useEffect(() => {
+  // useEffect(() => {
+  //   if (audioRef.current) {
+  //     audioRef.current.volume = volume;
+  //   }
+  // }, [volume]);
+  
+  const handleVolume = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
+      setVolume(Number(event.target.value));
     }
   }, [volume]);
+
+  const handleProgress = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    if (audioRef.current) {
+      setCurrentTime(Number(event.target.value));
+      audioRef.current.currentTime = Number(event.target.value);
+    }
+  }, []);
 
   const handleNext = () => {
     dispatch(setNextTrack());
@@ -104,10 +118,11 @@ export const Player = () => {
           max={duration}
           value={currentTime}
           step={0.01}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            audioRef.current &&
-            (audioRef.current.currentTime = Number(e.target.value))
-          }
+          onChange={handleProgress}
+          // onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          //   audioRef.current &&
+          //   (audioRef.current.currentTime = Number(e.target.value))
+          // }
         />
 
         <div className={styles.bar__playerBlock}>
@@ -211,10 +226,8 @@ export const Player = () => {
                   max="1"
                   step="0.01"
                   value={volume}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setVolume(Number(e.target.value))
-                  }
-                />
+                  onChange={handleVolume}
+                  />
               </div>
             </div>
           </div>
