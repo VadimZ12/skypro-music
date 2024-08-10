@@ -10,7 +10,7 @@ type Props = {
   onClick: (value: string) => void;
   value: string;
   isOpen: boolean;
-  selected: string[];
+  selected: string[] | string;
 };
 const FilterItem = ({
   title,
@@ -26,15 +26,16 @@ const FilterItem = ({
       dispatch(setFilter({ order: item }));
       return;
     }
-    dispatch(
-      setFilter({
-        [value]: selected.includes(item)
-          ? selected.filter((el) => el !== item)
-          : [...selected, item],
-      })
-    );
+    if (selected instanceof Array)
+      dispatch(
+        setFilter({
+          [value]: selected.includes(item)
+            ? selected.filter((el) => el !== item)
+            : [...selected, item],
+        })
+      );
   };
-  
+
   return (
     <div>
       <div
@@ -44,10 +45,11 @@ const FilterItem = ({
         onClick={() => {
           onClick(value);
         }}
-      >{
-        selected.length > 0 && value !== "release" ? <div className={styles.filterCount}>{selected.length}</div> : null
-      }
-       
+      >
+        {selected.length > 0 && value !== "release" ? (
+          <div className={styles.filterCount}>{selected.length}</div>
+        ) : null}
+
         {title}
       </div>
 
@@ -57,7 +59,12 @@ const FilterItem = ({
             {list.map((item, index) => (
               <li
                 key={index}
-                className={cn(styles.listText, selected.includes(item) ? styles.listTextActive : "")}
+                className={cn(styles.listText, {
+                  [styles.listTextActive]:
+                    value === "release"
+                      ? selected === item
+                      : selected.includes(item),
+                })}
                 onClick={() => toggleFilter(item)}
               >
                 {item}

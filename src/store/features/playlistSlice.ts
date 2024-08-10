@@ -1,5 +1,15 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TrackType } from "@/types/types";
+import { fetchFavoriteTracks } from "@/api/track";
+
+export const getFavoriteTracks = createAsyncThunk(
+  "playlist/getFavoriteTracks",
+  async (access: string) => {
+    const favoriteTracks = await fetchFavoriteTracks(access);
+    return favoriteTracks;
+  }
+);
+
 type PlaylistStateType = {
   isPlaying: boolean;
   currentTrack: null | TrackType;
@@ -13,6 +23,7 @@ type PlaylistStateType = {
     searchString: string;
   };
   filterPlaylist: TrackType[];
+  likedTracks: TrackType[];
 };
 const initialState: PlaylistStateType = {
   isPlaying: false,
@@ -27,6 +38,7 @@ const initialState: PlaylistStateType = {
     searchString: "",
   },
   filterPlaylist: [],
+  likedTracks: [],
 };
 
 const PlaylistSlice = createSlice({
@@ -126,11 +138,39 @@ const PlaylistSlice = createSlice({
               new Date(b.release_date).getTime()
           );
 
-        default: filterTracks
+        default:
+          filterTracks;
           break;
       }
       state.filterPlaylist = filterTracks;
     },
+    resetFilters: (state) => {
+      state.filterOptions = {
+        author: [],
+        genre: [],
+        order: "По умолчанию",
+        searchString: "",
+      };
+      state.filterPlaylist = state.playlist;
+    },
+    likeTrack: (state, action: PayloadAction<TrackType>) => {
+      state.likedTracks.push(action.payload);
+    },
+    disLikeTrack: (state, action: PayloadAction<TrackType>) => {
+      state.likedTracks = state.likedTracks.filter(
+        (el) => el.id !== action.payload.id
+      );
+    },
+    clearLikedTracks: (state) => {state.likedTracks = []}
+   
+  },
+  extraReducers(builder) {
+    builder.addCase(
+      getFavoriteTracks.fulfilled,
+      (state, action: PayloadAction<TrackType[]>) => {
+        state.likedTracks = action.payload;
+      }
+    );
   },
 });
 
@@ -141,6 +181,10 @@ export const {
   setPrevTrack,
   setIsShuffled,
   setFilter,
-  setPlaylist
+  setPlaylist,
+  likeTrack,
+  disLikeTrack,
+  clearLikedTracks,
+  resetFilters
 } = PlaylistSlice.actions;
 export const playlistReducer = PlaylistSlice.reducer;

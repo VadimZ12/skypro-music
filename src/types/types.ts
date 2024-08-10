@@ -4,7 +4,7 @@ export type StaredUserType = {
   first_name: string;
   last_name: string;
   email: string;
-};
+  };
 export type TrackType = {
   id: number;
   name: string;
@@ -18,6 +18,9 @@ export type TrackType = {
   stared_user: StaredUserType[];
 };
 export type Props = {
-  uniqueAuthors: string[];
-  uniqueGenre: string[];
+  tracks: TrackType[];
 }
+export type SigninFormType = {
+  email: string;
+  password: string;
+};

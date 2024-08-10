@@ -2,10 +2,16 @@
 import { useState } from "react";
 import FilterItem from "./FilterItem/FilterItem";
 import styles from "./Filters.module.css";
-import { Props } from "@/types/types";
 import { useAppSelector } from "@/hooks/store";
-
-export const Filters = ({ uniqueAuthors, uniqueGenre }: Props) => {
+import { TrackType } from "@/types/types";
+export type Props = {
+  tracks: TrackType[];
+};
+export const Filters = ({ tracks }: Props) => {
+  const uniqueAuthors = Array.from(
+    new Set(tracks?.map((track) => track.author))
+  );
+  const uniqueGenre = Array.from(new Set(tracks?.map((track) => track.genre)));
   const filterData = [
     {
       list: uniqueAuthors,
@@ -23,7 +29,7 @@ export const Filters = ({ uniqueAuthors, uniqueGenre }: Props) => {
       list: ["По умолчанию", "Сначала новые", "Сначала старые"],
       title: "году выпуска",
       value: "release",
-      selected: Array.from(useAppSelector((store) => store.playlist.filterOptions.order)),
+      selected: useAppSelector((store) => store.playlist.filterOptions.order),
     },
   ];
   const [filterValue, setFilterValue] = useState<string | null>(null);
