@@ -1,23 +1,39 @@
-.mainCenterblock {
-    width: auto;
-    -webkit-box-flex: 3;
-    -ms-flex-positive: 3;
-    flex-grow: 3;
-    padding: 20px 320px 20px 250px;
-  }
-  
-  .centerblockH2 {
-    font-style: normal;
-    font-weight: 400;
-    font-size: 64px;
-    line-height: 72px;
-    letter-spacing: -0.8px;
-    margin-bottom: 95px;
-  }
-  .link {
-    color: #ffff;
-    font-size: 36px;
-  }
-  .link:hover {
-    color: blueviolet;
-  }
+"use client";
+import { Centerblock } from "@/components/Centerblock/Centerblock";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
+import React, { useEffect, useState } from "react";
+import styles from "./page.module.css";
+import { setPlaylist } from "@/store/features/playlistSlice";
+import Link from "next/link";
+
+export default function FavoriteTrackPage() {
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const logged = useAppSelector((state) => state.auth.tokens.access);
+  const tracks = useAppSelector((state) => state.playlist.likedTracks);
+  const filterTracks = useAppSelector((state) => state.playlist.filterPlaylist);
+  useEffect(() => {
+    dispatch(setPlaylist({ tracks: tracks })), console.log(tracks);
+    setIsLoading(false);
+  }, [dispatch, tracks]);
+
+  return (
+    <div className={styles.mainCenterblock}>
+      {logged ? (
+        <>
+          <h2 className={styles.centerblockH2}>Мой плейлист</h2>{" "}
+          <Centerblock tracks={filterTracks} />{" "}
+          {isLoading
+          ? "Загрузка"
+          : filterTracks.length === 0
+          ? "Треки не найдены"
+          : null}
+        </>
+      ) : (
+        <Link href={"/signin"} className={styles.link}>
+          Необходимо авторизоваться
+        </Link>
+      )}
+    </div>
+  );
+}
