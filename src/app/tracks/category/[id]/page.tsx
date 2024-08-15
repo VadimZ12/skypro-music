@@ -16,8 +16,8 @@ const Category = ({ params }: CategoryProps) => {
   useEffect(() => {
     playlistCategory(params.id)
       .then((response) => {
-        console.log(response);
-        dispatch(setPlaylist({ tracks: response.items }));
+        console.log(response.data);
+        dispatch(setPlaylist({ tracks: response.data.items }));
       })
       .catch((err) => {
         console.log(err.message);

@@ -15,7 +15,7 @@ const MainTracksPage = () => {
   const tracks = useAppSelector((store) => store.playlist.playlist);
   useEffect(() => {
     getTracks().then((tracksData) => {
-      dispatch(setPlaylist({ tracks: tracksData }));
+      dispatch(setPlaylist({ tracks: tracksData.data }));
       setIsLoading(false);
     });
   }, [dispatch]);

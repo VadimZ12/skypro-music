@@ -1,4 +1,4 @@
-const apiUrl: string = "https://skypro-music-api.skyeng.tech/catalog/track/";
+const apiUrl: string = "https://webdev-music-003b5b991590.herokuapp.com/catalog/track/"
 export async function getTracks() {
   const response = await fetch(apiUrl + "all/");
   if (!response.ok) {
@@ -18,5 +18,5 @@ export const fetchFavoriteTracks = async (access: string) => {
     throw new Error("Ошибка при получении данных");
   }
   const responseData = await response.json();
-  return responseData;
+  return responseData.data;
 };

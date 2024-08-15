@@ -7,7 +7,7 @@ import Track from "../Track/Track";
 type Props = {
   tracks: TrackType[];
  };
-export const Centerblock = ({ tracks}: Props) => {
+export const Centerblock = ({tracks}: Props) => {
   return (
     <div className={styles.centerblock}>
       <div className={styles.content}>
