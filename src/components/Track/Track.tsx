@@ -13,10 +13,11 @@ type Props = {
 };
 const Track = ({ track, tracks }: Props) => {
   const dispatch = useAppDispatch();
-  const { name, author, album, duration_in_seconds, stared_user } = track;
+  const { name, _id, author, album, duration_in_seconds } = track;
   const currentTrack = useAppSelector((state) => state.playlist.currentTrack);
-  const isCurrentTrack = currentTrack?.id === track.id;
+  const isCurrentTrack = currentTrack?._id === track._id;
   const isPlaying = useAppSelector((state) => state.playlist.isPlaying);
+ 
 
   const handleTrackClick = () => {
     dispatch(setCurrentTrack({ currentTrack: track, tracks }));

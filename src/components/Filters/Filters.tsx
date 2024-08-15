@@ -11,7 +11,8 @@ export const Filters = ({ tracks }: Props) => {
   const uniqueAuthors = Array.from(
     new Set(tracks?.map((track) => track.author))
   );
-  const uniqueGenre = Array.from(new Set(tracks?.map((track) => track.genre)));
+  const uniqueGenre = Array.from(new Set(tracks?.map((track) => track.genre[0])));
+  console.log(tracks)
   const filterData = [
     {
       list: uniqueAuthors,

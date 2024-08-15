@@ -21,7 +21,7 @@ export function useInitializeLikedTracks() {
 export const useLikeTrack = (track: TrackType | null) => {
   const dispatch = useAppDispatch();
   const likedTracks = useAppSelector((state) => state.playlist.likedTracks);
-  const isLiked = !!likedTracks.find((t) => t.id === track?.id);
+  const isLiked = !!likedTracks.find((t) => t._id === track?._id);
   const tokens = useAppSelector((state) => state.auth.tokens);
   const handleLike = async (
     
@@ -32,9 +32,9 @@ export const useLikeTrack = (track: TrackType | null) => {
       return alert("Пожалуйста, авторизуйтесь.");
     }
     const action = isLiked ? setDisLike : setLike;
-    console.log(isLiked)
+    console.log(track)
     try {
-      await action(tokens.access, track.id);
+      await action(tokens.access, track?._id);
       isLiked ? dispatch(disLikeTrack(track)) : dispatch(likeTrack(track));
     } catch (error) {
       console.error(error);

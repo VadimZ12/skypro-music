@@ -60,7 +60,7 @@ const PlaylistSlice = createSlice({
         ? state.shuffledPlaylist
         : state.playlist;
       const currentIndex = playlist.findIndex(
-        (playlist) => playlist.id === state.currentTrack?.id
+        (playlist) => playlist._id === state.currentTrack?._id
       );
       const nextIndex = currentIndex + 1;
       if (nextIndex <= playlist.length - 1) {
@@ -72,7 +72,7 @@ const PlaylistSlice = createSlice({
         ? state.shuffledPlaylist
         : state.playlist;
       const currentIndex = playlist.findIndex(
-        (playlist) => playlist.id === state.currentTrack?.id
+        (playlist) => playlist._id === state.currentTrack?._id
       );
       const prevIndex = currentIndex - 1;
       if (prevIndex >= 0) {
@@ -118,7 +118,7 @@ const PlaylistSlice = createSlice({
             : true;
         const hasGenre =
           state.filterOptions.genre.length > 0
-            ? state.filterOptions.genre.includes(track.genre)
+            ? state.filterOptions.genre.includes(track.genre[0])
             : true;
 
         return hasSearchString && hasAuthor && hasGenre;
@@ -158,7 +158,7 @@ const PlaylistSlice = createSlice({
     },
     disLikeTrack: (state, action: PayloadAction<TrackType>) => {
       state.likedTracks = state.likedTracks.filter(
-        (el) => el.id !== action.payload.id
+        (el) => el._id!== action.payload._id
       );
     },
     clearLikedTracks: (state) => {state.likedTracks = []}
