@@ -1,10 +1,9 @@
 "use client";
-import { useState, useRef, useEffect, ChangeEvent } from "react";
+import { useState, useRef, useEffect, ChangeEvent, useCallback } from "react";
 import cn from "classnames";
 import styles from "./Player.module.css";
-
 import ProgressBar from "../ProgressBar/ProgressBar";
-import { timer } from "../helper";
+import { timer } from "../../lib/helper";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import {
   setIsPlaying,
@@ -12,12 +11,13 @@ import {
   setNextTrack,
   setPrevTrack,
 } from "@/store/features/playlistSlice";
+import { useLikeTrack } from "@/hooks/likes";
 
 export const Player = () => {
   const currentTrack = useAppSelector((state) => state.playlist.currentTrack);
   const audioRef = useRef<null | HTMLAudioElement>(null);
   const dispatch = useAppDispatch();
-
+  const { isLiked, handleLike } = useLikeTrack(currentTrack);
   const isPlaying = useAppSelector((state) => state.playlist.isPlaying);
   const isShaffled = useAppSelector((state) => state.playlist.isShuffled);
 
@@ -62,12 +62,22 @@ export const Player = () => {
     };
   }, [currentTrack]);
 
-  //регулирование громкости
-  useEffect(() => {
+  const handleVolume = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      if (audioRef.current) {
+        audioRef.current.volume = volume;
+        setVolume(Number(event.target.value));
+      }
+    },
+    [volume]
+  );
+
+  const handleProgress = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     if (audioRef.current) {
-      audioRef.current.volume = volume;
+      setCurrentTime(Number(event.target.value));
+      audioRef.current.currentTime = Number(event.target.value);
     }
-  }, [volume]);
+  }, []);
 
   const handleNext = () => {
     dispatch(setNextTrack());
@@ -104,10 +114,7 @@ export const Player = () => {
           max={duration}
           value={currentTime}
           step={0.01}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            audioRef.current &&
-            (audioRef.current.currentTime = Number(e.target.value))
-          }
+          onChange={handleProgress}
         />
 
         <div className={styles.bar__playerBlock}>
@@ -115,7 +122,7 @@ export const Player = () => {
             <div className={styles.player__controls}>
               <div className={styles.player__btnPrev} onClick={handlePrev}>
                 <svg className={styles.player__btnPrevSvg}>
-                  <use xlinkHref="img/icon/sprite.svg#icon-prev" />
+                  <use xlinkHref="/img/icon/sprite.svg#icon-prev" />
                 </svg>
               </div>
               <div className={cn(styles.player__btnPlay, styles.btn)}>
@@ -124,20 +131,20 @@ export const Player = () => {
                     className={styles.player__btnPlaySvg}
                     onClick={togglePlay}
                   >
-                    <use xlinkHref="img/icon/sprite.svg#icon-pause" />
+                    <use xlinkHref="/img/icon/sprite.svg#icon-pause" />
                   </svg>
                 ) : (
                   <svg
                     className={styles.player__btnPlaySvg}
                     onClick={togglePlay}
                   >
-                    <use xlinkHref="img/icon/sprite.svg#icon-play" />
+                    <use xlinkHref="/img/icon/sprite.svg#icon-play" />
                   </svg>
                 )}
               </div>
               <div className={styles.player__btnNext} onClick={handleNext}>
                 <svg className={styles.player__btnNextSvg}>
-                  <use xlinkHref="img/icon/sprite.svg#icon-next" />
+                  <use xlinkHref="/img/icon/sprite.svg#icon-next" />
                 </svg>
               </div>
               <div onClick={handleLoop} className={styles.player__btnRepeat}>
@@ -146,7 +153,7 @@ export const Player = () => {
                     [styles.activeSVG]: isLoop,
                   })}
                 >
-                  <use xlinkHref="img/icon/sprite.svg#icon-repeat" />
+                  <use xlinkHref="/img/icon/sprite.svg#icon-repeat" />
                 </svg>
               </div>
               <div
@@ -158,7 +165,7 @@ export const Player = () => {
                     [styles.player__btnShuffleSvgActive]: isShaffled,
                   })}
                 >
-                  <use xlinkHref="img/icon/sprite.svg#icon-shuffle" />
+                  <use xlinkHref="/img/icon/sprite.svg#icon-shuffle" />
                 </svg>
               </div>
             </div>
@@ -167,7 +174,7 @@ export const Player = () => {
               <div className={styles.trackPlay__contain}>
                 <div className={styles.trackPlay__image}>
                   <svg className={styles.trackPlay__svg}>
-                    <use xlinkHref="img/icon/sprite.svg#icon-note" />
+                    <use xlinkHref="/img/icon/sprite.svg#icon-note" />
                   </svg>
                 </div>
                 <div className={styles.trackPlay__author}>
@@ -183,13 +190,13 @@ export const Player = () => {
               </div>
               <div className={styles.trackPlay__likeDis}>
                 <div className={cn(styles.trackPlay__like, styles.btnIcon)}>
-                  <svg className={styles.trackPlay__likeSvg}>
-                    <use xlinkHref="img/icon/sprite.svg#icon-like" />
-                  </svg>
-                </div>
-                <div className={cn(styles.trackPlay__dislike, styles.btnIcon)}>
-                  <svg className={styles.trackPlay__dislikeSvg}>
-                    <use xlinkHref="img/icon/sprite.svg#icon-dislike" />
+                  <svg
+                    className={cn(styles.trackPlay__likeSvg, {
+                      [styles.trackPlaylikeSvgActive]: isLiked,
+                    })}
+                    onClick={handleLike}
+                  >
+                    <use xlinkHref="/img/icon/sprite.svg#icon-like" />
                   </svg>
                 </div>
               </div>
@@ -199,7 +206,7 @@ export const Player = () => {
             <div className={styles.volume__content}>
               <div className={styles.volume__image}>
                 <svg className={styles.volume__svg}>
-                  <use xlinkHref="img/icon/sprite.svg#icon-volume" />
+                  <use xlinkHref="/img/icon/sprite.svg#icon-volume" />
                 </svg>
               </div>
               <div className={cn(styles.volume__progress, styles.btn)}>
@@ -211,9 +218,7 @@ export const Player = () => {
                   max="1"
                   step="0.01"
                   value={volume}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setVolume(Number(e.target.value))
-                  }
+                  onChange={handleVolume}
                 />
               </div>
             </div>

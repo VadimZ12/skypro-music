@@ -1,21 +1,15 @@
 import Image from "next/image";
 import styles from "./Sidebar.module.css";
+import Link from "next/link";
 
 export const Sidebar = () => {
   return (
     <div className={styles.sidebar}>
-      <div className={styles.sidebar__personal}>
-        <p className={styles.sidebar__personalName}>Sergey.Ivanov</p>
-        <div className={styles.sidebar__icon}>
-          <svg>
-            <use xlinkHref="img/icon/sprite.svg#logout" />
-          </svg>
-        </div>
-      </div>
+    
       <div className={styles.sidebar__block}>
         <div className={styles.sidebar__list}>
-          <div className={styles.sidebar__item}>
-            <a className={styles.sidebar__link} href="#">
+           <div className={styles.sidebar__item}>
+            <Link className={styles.sidebar__link} href="/tracks/category/1">
               <Image
                 className={styles.sidebar__img}
                 src="/img/playlist01.png"
@@ -23,10 +17,10 @@ export const Sidebar = () => {
                 width={250}
                 height={150}
               />
-            </a>
+            </Link>
           </div>
           <div className={styles.sidebar__item}>
-            <a className={styles.sidebar__link} href="#">
+            <Link className={styles.sidebar__link} href="/tracks/category/2">
               <Image
                 className={styles.sidebar__img}
                 src="/img/playlist02.png"
@@ -34,10 +28,10 @@ export const Sidebar = () => {
                 width={250}
                 height={150}
               />
-            </a>
+            </Link>
           </div>
           <div className={styles.sidebar__item}>
-            <a className={styles.sidebar__link} href="#">
+            <Link className={styles.sidebar__link} href="/tracks/category/3">
               <Image
                 className={styles.sidebar__img}
                 src="/img/playlist03.png"
@@ -45,7 +39,7 @@ export const Sidebar = () => {
                 width={250}
                 height={150}
               />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -24,6 +24,7 @@
 
 .modal__btnEnter:hover {
   background-color: #3f007d;
+  color: #ffffff;
 }
 
 .modal__btnSignup:hover {
@@ -129,6 +130,7 @@
   width: 278px;
   height: 52px;
   background-color: #580ea2;
+  font-size: 18px;
   border-radius: 6px;
   margin-top: 60px;
   margin-bottom: 20px;
@@ -163,6 +165,7 @@
   -ms-flex-pack: center;
   justify-content: center;
 }
+
 
 .modal__btnSignup {
   width: 278px;
@@ -209,4 +212,9 @@
 
 .login {
   margin-bottom: 30px;
+}
+.error {
+  color:red;
+  font-size: 12px;
+  font-weight: bold;
 }
