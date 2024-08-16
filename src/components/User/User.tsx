@@ -1,12 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
-import styles from "./Exit.module.css";
 import { useInitializeLikedTracks } from "@/hooks/likes";
+import styles from "./User.module.css";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
 import { logout } from "@/store/features/authSlice";
 import { clearLikedTracks } from "@/store/features/playlistSlice";
-
-const Exit = () => {
+export default function User() {
   const dispatch = useAppDispatch();
   useInitializeLikedTracks();
 
@@ -15,22 +13,27 @@ const Exit = () => {
   if (!userName) {
     return null;
   }
+
   const exitLogout = () => {
     dispatch(logout());
     dispatch(clearLikedTracks());
   };
+
   return (
-    <div>
-      <div className={styles.sidebar__personal}>
-        <p className={styles.sidebar__personalName}>{userName}</p>
-        <div className={styles.sidebar__icon} onClick={exitLogout}>
-          <svg>
-            <use xlinkHref="/img/icon/sprite.svg#logout" />
-          </svg>
-        </div>
-      </div>
+    <div className={styles.sidebarPersonal}>
+      <p className={styles.sidebarPersonalName}>{userName}</p>
+      <div onClick={exitLogout} className={styles.sidebarIcon}>
+            
+              <svg>
+                <use xlinkHref="/img/icon/sprite.svg#logout" />
+              </svg>
+            
+          </div>
+      {/* <Icon
+        name="logout"
+        wrapperClass={styles.sidebarIcon}
+        iconClass={styles.sidebarIconSvg}
+      /> */}
     </div>
   );
-};
-
-export default Exit;
+}

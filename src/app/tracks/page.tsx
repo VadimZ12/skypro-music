@@ -1,39 +1,31 @@
 "use client";
-import { Centerblock } from "@/components/Centerblock/Centerblock";
-import { Filters } from "@/components/Filters/Filters";
-import React, { useEffect, useState } from "react";
-import styles from "./layout.module.css";
+import Playlist from "@/components/Playlist/Playlist";
+import { useEffect, useState } from "react";
+import { trackType } from "@/components/types";
+import { getTracks } from "@/api/tracks";
+import { setInitialTracks } from "@/store/features/playlistSlice";
+import Filter from "@/components/Filters/Filters";
+import styles from "@components/Centerblock/Centerblock.module.css";
 import { useAppDispatch, useAppSelector } from "@/hooks/store";
-import { setPlaylist } from "@/store/features/playlistSlice";
-import { getTracks } from "@/api/track";
-import { Sidebar } from "@/components/Sidebar/Sidebar";
 
-const MainTracksPage = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+export default function MainTrackPage() {
   const dispatch = useAppDispatch();
-  const filterTracks = useAppSelector((store) => store.playlist.filterPlaylist);
-  const tracks = useAppSelector((store) => store.playlist.playlist);
+  const [tracks, setTracks] = useState<trackType[]>([]);
+  const filteredTracks = useAppSelector(
+    (state) => state.playlist.filteredTracks
+  );
+
   useEffect(() => {
     getTracks().then((tracksData) => {
-      dispatch(setPlaylist({ tracks: tracksData.data }));
-      setIsLoading(false);
+      setTracks(tracksData);
+      dispatch(setInitialTracks({ initialTracks: tracksData }));
     });
   }, [dispatch]);
   return (
     <>
-      <div className={styles.mainCenterblock}>
-        <h2 className={styles.heading}>Треки</h2>
-        <Filters tracks={tracks} />
-        <Centerblock tracks={filterTracks} />
-        {isLoading
-          ? "Загрузка"
-          : filterTracks.length === 0
-          ? "Треки не найдены"
-          : null}
-      </div>
-      <Sidebar />
+    <h2 className={styles.centerblockH2}>Треки</h2>
+      <Filter />
+      <Playlist tracks={filteredTracks} playlist={tracks} />
     </>
   );
-};
-
-export default MainTracksPage;
+}

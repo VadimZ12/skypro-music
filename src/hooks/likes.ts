@@ -1,41 +1,47 @@
+"use client";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import {
-  disLikeTrack,
-  getFavoriteTracks,
+  dislikeTrack,
+  getFavouriteTracks,
   likeTrack,
 } from "@/store/features/playlistSlice";
-import { TrackType } from "@/types/types";
-import { setDisLike, setLike } from "@/api/like";
+import { trackType } from "@/components/types";
+import { dislikeTrackFetch, likeTrackFetch } from "@/api/tracks";
 
 export function useInitializeLikedTracks() {
   const dispatch = useAppDispatch();
   const tokens = useAppSelector((state) => state.auth.tokens);
   useEffect(() => {
     if (tokens.access) {
-      dispatch(getFavoriteTracks(tokens.access));
+      dispatch(getFavouriteTracks(tokens.access));
     }
   }, [tokens, dispatch]);
 }
 
-export const useLikeTrack = (track: TrackType | null) => {
+export const useLikeTrack = (track: trackType) => {
   const dispatch = useAppDispatch();
-  const likedTracks = useAppSelector((state) => state.playlist.likedTracks);
-  const isLiked = !!likedTracks.find((t) => t._id === track?._id);
   const tokens = useAppSelector((state) => state.auth.tokens);
+  const likedTracks = useAppSelector((state) => state.playlist.likedTracks);
+  const isLiked = likedTracks.some(
+    (likedTrack) => likedTrack._id === track._id
+  );
   const handleLike = async (
-    
-     e: React.MouseEvent<SVGSVGElement, MouseEvent>
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
-     e.stopPropagation();
-    if (!tokens.access) {
-      return alert("Пожалуйста, авторизуйтесь.");
-    }
-    const action = isLiked ? setDisLike : setLike;
-    console.log(track)
+    const action = isLiked ? dislikeTrackFetch : likeTrackFetch;
     try {
-      await action(tokens.access, track?._id);
-      isLiked ? dispatch(disLikeTrack(track)) : dispatch(likeTrack(track));
+      await action({
+        id: String(track._id),
+        access: tokens?.access,
+      });
+      if (isLiked) {
+        dispatch(dislikeTrack(track));
+        console.log(likedTracks);
+      } else {
+        dispatch(likeTrack(track));
+        console.log(likedTracks);
+      }
     } catch (error) {
       console.error(error);
     }

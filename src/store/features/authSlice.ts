@@ -1,5 +1,5 @@
-import { fetchAuthorization, fetchTokens, fetchUser } from "@/api/user";
-import { SigninFormType, StaredUserType } from "@/types/types";
+import { fetchSignup, fetchTokens, fetchUser, refreshToken } from "@/api/user";
+import { SigninFormType, SignupFormType, userType } from "@/components/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const getUser = createAsyncThunk(
@@ -9,29 +9,40 @@ export const getUser = createAsyncThunk(
     return user;
   }
 );
+
 export const getTokens = createAsyncThunk(
   "user/getTokens",
   async ({ email, password }: SigninFormType) => {
     const tokens = await fetchTokens({ email, password });
+    console.log(tokens)
     return tokens;
   }
 );
 
-export const getAuth = createAsyncThunk(
-  "user/getAuth",
-  async ({ email, password }: SigninFormType) => {
-    const authorization = await fetchAuthorization({ email, password});
-    return authorization;
+export const getSignup = createAsyncThunk(
+  "user/getSignup",
+  async ({ email, password, username }: SignupFormType) => {
+    const user = await fetchSignup({ email, password, username });
+    return user;
   }
 );
 
+export const getNewAccessToken = createAsyncThunk(
+  "user/getNewAccessToken",
+  async ( refresh: string) => {
+      const token = await refreshToken( refresh )
+      return token
+  }
+)
+
 type AuthStateType = {
-  user: null | StaredUserType;
+  user: null | userType;
   tokens: {
-    access: string | null;
-    refresh: string | null;
+    access: null | string;
+    refresh: null | string;
   };
 };
+
 const initialState: AuthStateType = {
   user: null,
   tokens: {
@@ -39,12 +50,11 @@ const initialState: AuthStateType = {
     refresh: null,
   },
 };
-
-const AuthSlice = createSlice({
+const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-     logout: (state) => {
+    logout: (state) => {
       state.user = null;
       state.tokens.access = null;
       state.tokens.refresh = null;
@@ -52,36 +62,28 @@ const AuthSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(
-        getUser.fulfilled,
-        (state, action: PayloadAction<StaredUserType>) => {
-          state.user = action.payload;
-        }
-      )
+      .addCase(getUser.fulfilled, (state, action: PayloadAction<userType>) => {
+        state.user = action.payload;
+      })
       .addCase(
         getTokens.fulfilled,
         (
           state,
           action: PayloadAction<{
-            access: string | null;
-            refresh: string | null;
+            access: null | string;
+            refresh: null | string;
           }>
         ) => {
           state.tokens.access = action.payload.access;
           state.tokens.refresh = action.payload.refresh;
         }
-      )
-      .addCase(
-        getAuth.fulfilled,
-        (state, action: PayloadAction<StaredUserType>) => {
-          state.user = action.payload;
-        }
-      )
-      .addCase(getUser.rejected, (state, action) => {
-        console.error("Error:", action.error.message); // Выводим сообщение об ошибке в консоль
-      });
+      ).addCase(getSignup.fulfilled, (state, action: PayloadAction<userType>) => {
+        state.user = action.payload;
+    }).addCase(getNewAccessToken.fulfilled, (state, action: PayloadAction<string>) => {
+        state.tokens.access = action.payload;
+    })
   },
 });
 
-export const { logout } = AuthSlice.actions;
-export const authReduser = AuthSlice.reducer;
+export const { logout } = authSlice.actions;
+export const authReducer = authSlice.reducer;

@@ -1,20 +1,18 @@
-"use client";
-import Image from "next/image";
-import styles from "./SignIn.module.css";
-import cn from "classnames";
+"use client"
 import Link from "next/link";
+import Image from "next/image";
+import styles from "./LoginComponent.module.css";
+import classNames from "classnames";
 import { useState } from "react";
-import { useAppDispatch } from "@/hooks/store";
 import { getTokens, getUser } from "@/store/features/authSlice";
 import { useRouter } from "next/navigation";
-
-export const SignIn = () => {
+import { useAppDispatch } from "@/hooks/store";
+export default function LoginComponent() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({ email: "", password: "" });
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
     setFormData((prevFormData) => {
       return {
         ...prevFormData,
@@ -22,36 +20,32 @@ export const SignIn = () => {
       };
     });
   }
-  async function handleSubmit(event: React.MouseEvent<HTMLButtonElement>) {
-    event.preventDefault();
+
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
     try {
       await Promise.all([
         dispatch(getTokens(formData)).unwrap(),
         dispatch(getUser(formData)).unwrap(),
       ]);
       router.push("/");
-    } catch (err: any) {
-      console.log(err.message)
-      setError(err.message);
+    } catch (error) {
+      //выполнить вывод ошибки
+      console.log(error);
     }
   }
   return (
     <div className={styles.wrapper}>
       <div className={styles.containerEnter}>
-        <div className={styles.modal__block}>
-          <form className={styles.modal__formLogin} action="#">
+        <div className={styles.modalBlock}>
+          <form className={styles.modalFormLogin} action="#">
             <Link href="/">
-              <div className={styles.modal__logo}>
-                <Image
-                  src="/img/logo_modal.png"
-                  alt="logo"
-                  width={140}
-                  height={21}
-                />
+              <div className={styles.modalLogo}>
+                 <Image src="/img/logo_modal.png" alt="logo"  width={140} height={21} />
               </div>
             </Link>
             <input
-              className={cn(styles.modal__input, styles.login)}
+              className={classNames(styles.modalInput, styles.login)}
               type="text"
               name="email"
               placeholder="Почта"
@@ -59,23 +53,22 @@ export const SignIn = () => {
               onChange={handleChange}
             />
             <input
-              className={cn(styles.modal__input, styles.password)}
+              className={styles.modalInput}
               type="password"
               name="password"
               placeholder="Пароль"
               value={formData.password}
               onChange={handleChange}
             />
-            {error && <p className={styles.error}>{error}</p>}
-            <button className={styles.modal__btnEnter} onClick={handleSubmit}>
+            <button className={styles.modalBtnEnter} onClick={handleSubmit}>
               Войти
             </button>
-            <button className={styles.modal__btnSignup}>
-              <Link href="/signup">Зарегистрироваться</Link>
+            <button className={styles.modalBtnSignup}>
+              <a href="/signup">Зарегистрироваться</a>
             </button>
           </form>
         </div>
       </div>
     </div>
   );
-};
+}
