@@ -1,22 +1,3 @@
-.nav {
-  width: 244px;
-  background-color: #181818;
-  padding: 20px 0 20px 36px;
-  position: absolute;
-}
-.nav__logo {
-  width: 113.33px;
-  height: 43px;
-  padding: 13px 0 13px 0;
-  background-color: transparent;
-  margin-bottom: 20px;
-}
-.logoImage {
-  width: 113.33px;
-  height: 17px;
-  color: #181818;
-  margin-bottom: 26px;
-}
 .navBurger {
   width: 20px;
   height: 36px;
@@ -31,9 +12,13 @@
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
-  background: transparent;
-  border: none;
 }
+
+.navMenu {
+  display: block;
+  visibility: visible;
+}
+
 .burgerLine {
   display: inline-block;
   width: 100%;
@@ -41,10 +26,6 @@
   background-color: #d3d3d3;
 }
 
-.navMenu {
-  display: block;
-  visibility: visible;
-}
 .menuList {
   padding: 18px 0 10px 0;
 }

@@ -1,15 +1,13 @@
 import Image from "next/image";
-import Bar from "@/components/Bar/Bar";
-import Centerblock from "@/components/Centerblock/Centerblock";
 import Menu from "@/components/Menu/Menu";
+import Centerblock from "@/components/Centerblock/Centerblock";
 import Sidebar from "@/components/Sidebar/Sidebar";
-import styles from "./layout.module.css";
+import Bar from "@/components/Bar/Bar";
+import Playlist from "@/components/Playlist/Playlist";
+import styles from "./page.module.css";
+import Filter from "@/components/Filters/Filters";
 
-export default function TrackLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function Home() {
   return (
     <div className={styles.wrapper}>
       <div className="container">
@@ -28,11 +26,12 @@ export default function TrackLayout({
           </nav>
           <div className={styles.mainCenterblock}>
             <Centerblock />
-            {children}
+            <Filter />
+            <Playlist tracks={[]} playlist={[]}/>
           </div>
           <Sidebar />
         </main>
-        <Bar />
+        <Bar/>
         <footer className="footer" />
       </div>
     </div>

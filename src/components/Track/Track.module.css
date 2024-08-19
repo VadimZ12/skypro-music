@@ -1,42 +1,147 @@
-.playlist__item {
+.wrapper {
   width: 100%;
-  display: block;
-  margin-bottom: 12px;
+  min-height: 100%;
+  overflow: hidden;
 }
-.playlist__track {
+
+.containerSignup {
+  max-width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.modalBtnSignupEnt:hover {
+  background-color: #3f007d;
+}
+
+.modalBtnSignupEnt:active {
+  background-color: #271a58;
+}
+
+.modalBlock {
+  position: absolute;
+  z-index: 2;
+  left: calc(50% - (366px / 2));
+  top: calc(50% - (439px / 2));
+  opacity: 1;
+}
+
+.modalFormLogin {
+  width: 366px;
+  height: 439px;
+  background-color: #ffffff;
+  border-radius: 12px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
+  -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
+  -ms-flex-direction: column;
+  flex-direction: column;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  cursor: pointer;
+  padding: 43px 44px 47px 40px;
 }
-.track__title {
+
+.modalFormLogin input:first-child {
+  margin-bottom: 30px;
+}
+
+.modalLogo {
+  width: 140px;
+  height: 21px;
+  margin-bottom: 34px;
+  background-color: transparent;
+}
+
+.modalLogo img {
+  width: 140px;
+  height: auto;
+}
+
+.modalInput {
+  width: 100%;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid #d0cece;
+  padding: 8px 1px;
+  margin-right: 3px;
+  margin-bottom: 30px;
+}
+
+.modalInput::-webkit-input-placeholder {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #d0cece;
+}
+
+.modalInput:-ms-input-placeholder {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #d0cece;
+}
+
+.modalInput::-ms-input-placeholder {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #d0cece;
+}
+
+.modalInput::placeholder {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #d0cece;
+}
+
+.modalBtnSignupEnt {
+  width: 278px;
+  height: 62px;
+  background-color: #580ea2;
+  border-radius: 6px;
+  margin-left: 4px;
+  border: none;
+  margin-top: 30px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  width: 447px;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #FFFFFF;
 }
-.track__titleImage {
-  width: 51px;
-  height: 51px;
-  padding: 16px;
-  background: #313131;
+
+.modalBtnSignupEnt a {
+  width: 100%;
+  height: 100%;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -0.05px;
+  color: #ffffff;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -46,103 +151,4 @@
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  margin-right: 17px;
-}
-.track__titleSvg {
-  width: 18px;
-  height: 17px;
-  fill: transparent;
-  stroke: #4e4e4e;
-}
-.track__titleLink {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #ffffff;
-  
-}
-.track__titleSpan {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #4e4e4e;
-  
-}
-.track__author {
-  width: 321px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-}
-.track__authorLink {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #ffffff;
-  text-align: left;
-}
-
-.track__album {
-  width: 245px;
-}
-.track__albumLink {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #696969;
-}
-.track__likeSvg {
-  width: 14px;
-  height: 12px;
-  margin-right: 17px;
-  fill: transparent;
-  stroke: #696969;
-}
-.track__likeSvgActive {
-  width: 14px;
-  height: 12px;
-  margin-right: 17px;
-  fill: #b672ff;
-  stroke: #696969;
-}
-.track__timeText {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: right;
-  color: #696969;
-}
-.playingDot {
-  width: 16px;
-  height: 16px;
-  background-color: #b672ff;
-  border-radius: 8px;
-  display: block;
-  
-}
-.playingDotActive {
-  width: 16px;
-  height: 16px;
-  background-color: #b672ff;
-  border-radius: 8px;
-  display: block;
-  animation: bubble_out 0.6s ease-in-out infinite both;
-}
-
-@keyframes bubble_out {
-  0%,
-  to {
-    transform: scale(0.5);
-  }
-  50% {
-    transform: scale(1);
-  }
 }

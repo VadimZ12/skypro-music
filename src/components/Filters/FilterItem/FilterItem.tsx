@@ -1,80 +1,99 @@
-import { useDispatch } from "react-redux";
+import { trackType } from "@/components/types";
 import styles from "./FilterItem.module.css";
-import cn from "classnames";
-import { useAppDispatch } from "@/hooks/store";
-import { setFilter } from "@/store/features/playlistSlice";
+import classNames from "classnames";
+import { setFilters } from "@/store/features/playlistSlice";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks/store";
 
-type Props = {
+type FilterItemType = {
   title: string;
-  list: string[];
-  onClick: (value: string) => void;
-  value: string;
-  isOpen: boolean;
-  selected: string[] | string;
+  value: "author" | "genre" | "order";
+  handleFilterClick: (newFilter: string) => void;
+  isOpened: boolean;
+  optionList: string[] | string;
 };
-const FilterItem = ({
+
+const order = ["по умолчанию", "сначала новые", "сначала старые"];
+
+export default function FilterItem({
+  handleFilterClick,
   title,
-  list,
-  onClick,
   value,
-  isOpen,
-  selected = [],
-}: Props) => {
+  isOpened,
+  optionList,
+}: FilterItemType) {
+  const [filterNumber, setFilterNumber] = useState<number>(0);
+  const tracksData = useAppSelector((state) => state.playlist.initialTracks);
   const dispatch = useAppDispatch();
-  const toggleFilter = (item: string) => {
-    if (value === "release") {
-      dispatch(setFilter({ order: item }));
-      return;
-    }
-    if (selected instanceof Array)
-      dispatch(
-        setFilter({
-          [value]: selected.includes(item)
-            ? selected.filter((el) => el !== item)
-            : [...selected, item],
-        })
+  
+  const getFilterList = () => {
+    if (value !== "order") {
+      const array = new Set(
+        tracksData?.map((track: trackType) => track[value]) || []
       );
+      return Array.from(array);
+    }
+    return order;
   };
 
+  const toggleFilter = (item: string) => {
+    if (value !== "order" && optionList && optionList instanceof Array) {
+      dispatch(
+        setFilters({
+          [value]: optionList.includes(item)
+            ? optionList.filter((el) => el !== item)
+            : [...optionList, item],
+        })
+      );
+    } else {
+      dispatch(setFilters({ order: item }));
+    }
+  };
+
+  useEffect(() => {
+    if (value !== "order" && optionList) {
+      setFilterNumber(optionList.length);
+    }
+  }, [optionList, value]);
+  getFilterList();
   return (
-    <div>
-      <div
-        className={cn(styles.filter__button, styles.btnText, {
-          [styles.active]: isOpen,
-        })}
-        onClick={() => {
-          onClick(value);
-        }}
-      >
-        {selected.length > 0 && value !== "release" ? (
-          <div className={styles.filterCount}>{selected.length}</div>
-        ) : null}
-
-        {title}
-      </div>
-
-      {isOpen && (
-        <div className={styles.listContainer}>
-          <ul className={styles.listBox}>
-            {list.map((item, index) => (
-              <li
-                key={index}
-                className={cn(styles.listText, {
-                  [styles.listTextActive]:
-                    value === "release"
-                      ? selected === item
-                      : selected.includes(item),
-                })}
-                onClick={() => toggleFilter(item)}
-              >
-                {item}
-              </li>
-            ))}
-          </ul>
+    <>
+      <div>
+        <div className={styles.filterCount}>
+          <div
+            onClick={() => handleFilterClick(title)}
+            className={classNames(styles.filterButton, {
+              [styles.active]: isOpened,
+            })}
+          >
+            {title}
+          </div>
+          {optionList.length > 0 && value !== "order" ? (
+            <div className={styles.filteredItems}>{filterNumber}</div>
+          ) : null}
         </div>
-      )}
-    </div>
-  );
-};
 
-export default FilterItem;
+        <div>
+          {isOpened && (
+              <ul className={styles.filterListDown}>
+                {getFilterList().map((item) => (
+                  <li
+                    onClick={() => toggleFilter(item)}
+                    key={item}
+                    className={classNames(styles.filterItem, {
+                      [styles.filterItemActive]:
+                        value === "order"
+                          ? item === optionList
+                          : optionList.includes(item),
+                    })}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
